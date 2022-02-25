@@ -1,38 +1,67 @@
 // -*- coding: utf-8, tab-width: 2 -*-
 
-import felidae from 'exdata-taxonomy-misc-felidae';
 import eq from 'equal-pmb';
 
 import makeFilter from '../fce.mjs';
-// externally: import forf from 'filter-container-entries-pmb';
+// externally: import makeFilter from 'filter-container-entries-pmb';
 
-const catSpc = felidae.findByType('species').dict;
+const sandwichObj = {
+  bun:    { amount: 1, unit: 'ea', toasted: true },
+  cheese: { amount: 1, unit: 'slice' },
+  egg:    { amount: 3, unit: 'slice', boiled: 'hard' },
+  pickle: { amount: 4, unit: 'slice' },
+  dirt:   false,
+};
+const sandwichMap = new Map(Object.entries(sandwichObj));
+const sandwichSet = new Set(Object.keys(sandwichObj));
 
-function isOdd(x) { return ((x % 2) === 1); }
-const oddSpc = makeFilter({ dive: '.wp-en.oldid', decide: isOdd })(catSpc);
-eq(oddSpc, {
-  leo: { '': 'species', 'wp-en': { '': 'wp', oldid: 741625599 } },
-  nebulosa: { '': 'species', 'wp-en': { '': 'wp', oldid: 742251401 } },
-  rufus: { '': 'species', 'wp-en': { '': 'wp', oldid: 742216395 } },
-});
+eq(sandwichSet.has('dirt'), true);
+// ^- Because in a Set, the value always is the key.
+//    That's what we get from ignoring the recipe details.
 
-function wpId(x) { return x['wp-en'].oldid; }
-eq(oddSpc, makeFilter({ extract: wpId, decide: isOdd })(catSpc));
+const relevantIngredients = makeFilter()(sandwichObj);
+eq(Object.keys(relevantIngredients), ['bun', 'cheese', 'egg', 'pickle']);
 
-function hasLongKey(val, key) { return key.length > 3; }
+const omittedIngredients = makeFilter({ negate: true })(sandwichObj);
+eq(omittedIngredients, { dirt: false });
 
-const longOddSpc = makeFilter({
-  decide: hasLongKey,
+const toastedIngredients = makeFilter({ dive: 'toasted' })(sandwichObj);
+const { bun } = sandwichObj;
+eq(toastedIngredients, { bun });
+
+function isEven(x) { return ((x % 2) === 0); }
+function evenAmount(ingredient) { return isEven(ingredient.amount); }
+
+const evenIngredients = makeFilter({ decide: evenAmount })(sandwichObj);
+const { pickle } = sandwichObj;
+eq(evenIngredients, { pickle });
+eq(makeFilter({ decide: isEven, dive: 'amount' })(sandwichObj), { pickle });
+
+const evenIngrMap = makeFilter({ decide: evenAmount })(sandwichMap);
+eq(evenIngrMap.size, 1);
+eq(evenIngrMap.get('pickle'), pickle);
+
+const wholeIngredients = makeFilter({
+  decide(unit) { return unit === 'ea'; },
+  dive: 'unit',
   outFmt: 'keys',
-})(oddSpc);
-eq(longOddSpc, ['nebulosa', 'rufus']);
+})(sandwichMap);
+eq(wholeIngredients, ['bun']);
 
-const shortOddSpc = makeFilter({
-  decide: hasLongKey,
-  outFmt: 'keys',
-  negate: true,
-})(oddSpc);
-eq(shortOddSpc, ['leo']);
+function wordWithK(s) { return s.includes('k'); }
+
+const ingrWithK = makeFilter({ decide: wordWithK })(sandwichSet);
+eq(ingrWithK.size, 1);
+eq(ingrWithK.has('pickle'), true);
+
+const noK = makeFilter({ decide: wordWithK, negate: true })(sandwichSet);
+eq(noK.size, 4);
+eq(noK.has('bun'), true);
+eq(noK.has('cheese'), true);
+eq(noK.has('egg'), true);
+eq(noK.has('dirt'), true); // see earlier
+eq(noK.has('pickle'), false);
+
 
 
 console.info('+OK usage tests passed');

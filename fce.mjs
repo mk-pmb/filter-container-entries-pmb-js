@@ -3,8 +3,10 @@
 import getOwn from 'getown';
 import objDive from 'objdive';
 
+function ents2keys(ent) { return ent.map(e => e[0]); }
+function ents2vals(ent) { return ent.map(e => e[1]); }
 
-function ownEntries(x) { return x.entries(); }
+const mapSet = { entries(x) { return Array.from(x.entries()); } };
 
 const typeSwitch = {
 
@@ -22,8 +24,8 @@ const typeSwitch = {
   },
 
   Object,
-  Map: { entries: ownEntries, fromEntries(e) { return new Map(e); } },
-  Set: { entries: ownEntries, fromEntries(e) { return new Set(e); } },
+  Map: { ...mapSet, fromEntries(e) { return new Map(e); } },
+  Set: { ...mapSet, fromEntries(e) { return new Set(ents2vals(e)); } },
 
 };
 
@@ -49,8 +51,8 @@ function maybeExtractFirst(e, f) {
 
 const outputWrapers = {
   entries(ent) { return ent; },
-  keys(ent) { return ent.map(e => e[0]); },
-  values(ent) { return ent.map(e => e[1]); },
+  keys: ents2keys,
+  values: ents2vals,
 };
 
 
@@ -60,7 +62,8 @@ function makeFilterCore(decide, outWrap, empty) {
   const fce = function filterContainerEntries(input) {
     if (!input) { return false; }
     const typeHow = typeSwitch.guess(input);
-    const keep = typeHow.entries(input).filter(decide);
+    const ents = typeHow.entries(input);
+    const keep = ents.filter(decide);
     if (keep.length || (empty === undefined)) {
       return (outWrap || typeHow.fromEntries)(keep);
     }
