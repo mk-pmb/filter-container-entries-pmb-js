@@ -29,6 +29,8 @@ Returns a filter function that expects one argument, `input`.
   the `value` passed to `decide` will be extracted from somewhere inside the
   original value by diving along the path given in `dive` as understood by
   module [`objdive`](https://github.com/mk-pmb/objdive-js).
+* `extract`: If set to a function, similar to the `dive` option,
+  extract the value to be filtered. Applies before potential `dive`-ing.
 * `inFmt`: (input format) What arguments to call `decide` with.
   * `undefined` (default): `(value, key, input)`
   * `'entries'`: `(entry, index, input)` where `entry = [key, value]`.

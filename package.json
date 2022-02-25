@@ -1,5 +1,5 @@
 { "name": "filter-container-entries-pmb",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Filter an array, map, object or set, with advanced options.",
   "keywords": [
     "array",
@@ -28,7 +28,8 @@
   "eslintConfig": { "extends": "nodejs-pmb" },
 
   "dependencies": {
-    "getown": "^1.0.0"
+    "getown": "^1.0.0",
+    "objdive": "^0.1.3"
   },
   "devDependencies": {
     "equal-pmb": "^0.1.24",
