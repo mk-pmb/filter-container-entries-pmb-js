@@ -8,9 +8,9 @@ import makeFilter from '../fce.mjs';
 const sandwichObj = {
   bun:    { amount: 1, unit: 'ea', toasted: true },
   cheese: { amount: 1, unit: 'slice' },
+  dirt:   false,
   egg:    { amount: 3, unit: 'slice', boiled: 'hard' },
   pickle: { amount: 4, unit: 'slice' },
-  dirt:   false,
 };
 const sandwichMap = new Map(Object.entries(sandwichObj));
 const sandwichSet = new Set(Object.keys(sandwichObj));
@@ -42,8 +42,8 @@ eq(evenIngrMap.size, 1);
 eq(evenIngrMap.get('pickle'), pickle);
 
 const wholeIngredients = makeFilter({
-  decide(unit) { return unit === 'ea'; },
   dive: 'unit',
+  decide(u) { return u === 'ea'; },
   outFmt: 'keys',
 })(sandwichMap);
 eq(wholeIngredients, ['bun']);
