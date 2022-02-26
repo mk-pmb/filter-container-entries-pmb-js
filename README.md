@@ -22,7 +22,7 @@ Returns a filter function that expects one argument, `input`.
 `opt` is an optional options object that supports these optional keys:
 
 * `decide`: The function that decides what to keep.
-  It will be called with arguments according to option `inFmt`.
+  It will be called with arguments according to option `argFmt`.
   Default: the buil-in `Boolean`.
 * `negate`: If true-y, negate the results of `decide`.
 * `dive`: If set to something other than `undefined`,
@@ -31,7 +31,7 @@ Returns a filter function that expects one argument, `input`.
   module [`objdive`](https://github.com/mk-pmb/objdive-js).
 * `extract`: If set to a function, similar to the `dive` option,
   extract the value to be filtered. Applies before potential `dive`-ing.
-* `inFmt`: (input format) What arguments to call `decide` with.
+* `argFmt`: (input format) What arguments to call `decide` with.
   * `undefined` (default): `(value, key, input)`
   * `'entries'`: `(entry, index, input)` where `entry = [key, value]`.
 * `outFmt`: (output format) How to deliver the results:
