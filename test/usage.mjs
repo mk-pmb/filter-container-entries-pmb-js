@@ -29,6 +29,16 @@ const toastedIngredients = makeFilter({ dive: 'toasted' })(sandwichObj);
 const { bun } = sandwichObj;
 eq(toastedIngredients, { bun });
 
+eq(makeFilter({ dive: 'fried' })(sandwichObj), {});
+eq(makeFilter({ dive: 'fried', empty: false })(sandwichObj), false);
+eq(makeFilter({ dive: 'fried', empty: 42 })(sandwichObj), 42);
+eq(makeFilter({ dive: 'toasted', empty: 42 })(sandwichObj), { bun });
+
+eq(makeFilter({ dive: 'fried' })(sandwichMap).size, 0);
+eq(makeFilter({ dive: 'fried', empty: false })(sandwichMap), false);
+eq(makeFilter({ dive: 'fried', empty: 42 })(sandwichMap), 42);
+eq(makeFilter({ dive: 'toasted', empty: 42 })(sandwichMap).size, 1);
+
 function isEven(x) { return ((x % 2) === 0); }
 function evenAmount(ingredient) { return isEven(ingredient.amount); }
 
