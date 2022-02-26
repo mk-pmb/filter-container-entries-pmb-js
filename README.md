@@ -39,6 +39,9 @@ Returns a filter function that expects one argument, `input`.
   * `'entries'`: array of `[key, value]` pairs.
   * `'keys'`: array of matching keys from `input`
   * `'values'`: array of matching values from `input`
+  * `'dict'`: plain Object.
+    Useful if `input` is a Map and you want to convert the output to JSON.
+  * `'nobj'`: an Object with `null` prototype.
 * `empty`: If set to something other than `undefined`,
   instead of an empty result, return `empty`.
 

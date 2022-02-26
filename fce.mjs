@@ -7,6 +7,7 @@ function ents2keys(ent) { return ent.map(e => e[0]); }
 function ents2vals(ent) { return ent.map(e => e[1]); }
 
 const mapSet = { entries(x) { return Array.from(x.entries()); } };
+const ents2obj = Object.fromEntries;
 
 const typeSwitch = {
 
@@ -20,7 +21,7 @@ const typeSwitch = {
 
   Array: {
     entries: Object.entries,
-    fromEntries(e) { return Object.assign([], Object.fromEntries(e)); },
+    fromEntries(e) { return Object.assign([], ents2obj(e)); },
   },
 
   Object,
@@ -53,6 +54,8 @@ const outputWrapers = {
   entries(ent) { return ent; },
   keys: ents2keys,
   values: ents2vals,
+  dict(ent) { return ents2obj(ent); },
+  nobj(ent) { return Object.assign(Object.create(null), ents2obj(ent)); },
 };
 
 

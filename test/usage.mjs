@@ -25,9 +25,20 @@ eq(Object.keys(relevantIngredients), ['bun', 'cheese', 'egg', 'pickle']);
 const omittedIngredients = makeFilter({ negate: true })(sandwichObj);
 eq(omittedIngredients, { dirt: false });
 
-const toastedIngredients = makeFilter({ dive: 'toasted' })(sandwichObj);
+let toasted = makeFilter({ dive: 'toasted' })(sandwichObj);
 const { bun } = sandwichObj;
-eq(toastedIngredients, { bun });
+eq(toasted, { bun });
+
+eq(makeFilter({ dive: 'toasted' })(sandwichMap), new Map([['bun', bun]]));
+
+toasted = makeFilter({ dive: 'toasted', outFmt: 'dict' })(sandwichMap);
+eq(toasted, { bun });
+eq(typeof toasted.hasOwnProperty, 'function');
+
+toasted = makeFilter({ dive: 'toasted', outFmt: 'nobj' })(sandwichMap);
+eq(Object.keys(toasted), ['bun']);
+eq(toasted.bun, bun);
+eq(toasted.hasOwnProperty, undefined);
 
 eq(makeFilter({ dive: 'fried' })(sandwichObj), {});
 eq(makeFilter({ dive: 'fried', empty: false })(sandwichObj), false);
